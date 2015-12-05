@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
 # Create your views here.
 
-# TODO : view 함수에서 response 객체를 리턴하도록 수정해야함
+# render  
+#request 에 대해  랜더링할 템플릿명을 지정하면, Django 는 앱 폴더 내에 templates 를 검색하고,
+# 템플릿 콘텐츠를 기반으로 HttpResponse 를 만들어줌.
 def home_page(request):
-	return HttpResponse("<html><title>To-Do lists</title></html>")
+	return render(request, 'home.html')
 

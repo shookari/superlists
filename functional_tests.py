@@ -9,12 +9,10 @@ class NewVisitorTest(unittest.TestCase):
 		self.browser = webdriver.Firefox()
 		self.browser.implicitly_wait(3)
 
-			
 	def tearDown(self):
 		self.browser.quit()
 	
 	def test_can_start_a_list_and_retrieve_it_later(self):
-		self.fail ('finish the test')
 		# 웹 사이트 확인 요청 
 		self.browser.get('http://localhost:8000')
 		
@@ -40,7 +38,10 @@ class NewVisitorTest(unittest.TestCase):
 		table = self.browser.find_element_by_id('id_list_table')
 		rows = table.find_element_by_tag_name('tr')
 		
-		self.assertTrue(any(row.text == '1: Buy bird' for row in rows),)
+		self.assertTrue(
+			any(row.text == '1: Buy bird' for row in rows),
+			"Not display input item"
+			)
 		self.fail('Finish the Test')
 		
 if __name__ == '__main__':

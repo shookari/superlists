@@ -25,23 +25,35 @@ class NewVisitorTest(unittest.TestCase):
 		
 		# browser 에서 id_new_item element 를 찾고, element 의 attribute 가 placeholder 인 곳에 값을 체크 
 		inputbox = self.browser.find_element_by_id('id_new_item')
-		self.assertIn(inputbox.get_attribute('placeholder'), 'Working Item Input')
+		self.assertIn(inputbox.get_attribute('placeholder'), 'input work item')
 
 		# browser 에 id_new_item element 에 'Buy bird' 를 입력 
 		# testbox 에 사용자가 입력. (Buy bird)		
 		inputbox.send_keys('Buy bird')
-		
+		 
 		# Entry 키를 치면, 페이지가 갱신되고, 전체 목록에 'Buy Bird' 가 추가된다. 
 		inputbox.send_keys(Keys.ENTER)
 	
 		# 추가된 항목이 제대로 들어갔는지 확인한다. 
 		table = self.browser.find_element_by_id('id_list_table')
-		rows = table.find_element_by_tag_name('tr')
+		rows = table.find_elements_by_tag_name('tr')
+		 		
+		self.assertTrue('1:Buy bird', [row.text for row in rows])	
 		
-		self.assertTrue(
-			any(row.text == '1: Buy bird' for row in rows),
-			"Not display input item"
-			)
+		# 두 번째 입력 테스트
+		inputbox = self.browser.find_element_by_id('id_new_item')
+		inputbox.send_keys('make homeworld using bird')
+		inputbox.send_keys(Keys.ENTER)
+		
+		# 두 번째 목록 확인 
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn('1:Buy bird', [row.text for row in rows])	
+		self.assertIn('2:make homeworld using bird', [row.text for row in rows])	
+		
+		import time
+		time.sleep(10)	
+			
 		self.fail('Finish the Test')
 		
 if __name__ == '__main__':

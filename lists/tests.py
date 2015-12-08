@@ -19,3 +19,17 @@ class HomePageTest(TestCase):
 		# view 함수(home_page)에서 리턴된 결과와 html 결과가 같은 지 테스트
 		expected_html = render_to_string('home.html')
 		self.assertEqual(response.content.decode(), expected_html)
+
+	# post 요청에 대한 응답 처리 확인로직
+	def test_home_page_can_save_a_POST_request(self):
+		request = HttpRequest()
+		request.method = 'POST'
+		request.POST['item_text'] = 'new work item'
+		
+		response = home_page(request)
+		self.assertIn('new work item', response.content.decode()) 
+		expected_html = render_to_string(
+			'home.html',
+			{'new_item_text': 'new work item'}
+		)
+		self.assertEqual(response.content.decode(), expected_html)

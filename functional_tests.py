@@ -11,6 +11,12 @@ class NewVisitorTest(unittest.TestCase):
 
 	def tearDown(self):
 		self.browser.quit()
+		
+	# 리스트에 해당 row 가 존재하는지 확인하는 함수 
+	def check_for_row_in_list_table(self, row_text):
+		table = self.browser.find_element_by_id('id_list_table')
+		rows = table.find_elements_by_tag_name('tr')
+		self.assertIn(row_text,[row.text for row in rows])			
 	
 	def test_can_start_a_list_and_retrieve_it_later(self):
 		# 웹 사이트 확인 요청 
@@ -35,10 +41,7 @@ class NewVisitorTest(unittest.TestCase):
 		inputbox.send_keys(Keys.ENTER)
 	
 		# 추가된 항목이 제대로 들어갔는지 확인한다. 
-		table = self.browser.find_element_by_id('id_list_table')
-		rows = table.find_elements_by_tag_name('tr')
-		 		
-		self.assertTrue('1:Buy bird', [row.text for row in rows])	
+		self.check_for_row_in_list_table('1:Buy bird')
 		
 		# 두 번째 입력 테스트
 		inputbox = self.browser.find_element_by_id('id_new_item')
@@ -46,14 +49,9 @@ class NewVisitorTest(unittest.TestCase):
 		inputbox.send_keys(Keys.ENTER)
 		
 		# 두 번째 목록 확인 
-		table = self.browser.find_element_by_id('id_list_table')
-		rows = table.find_elements_by_tag_name('tr')
-		self.assertIn('1:Buy bird', [row.text for row in rows])	
-		self.assertIn('2:make homeworld using bird', [row.text for row in rows])	
+		self.check_for_row_in_list_table('2:make homeworld using bird')
 		
-		import time
-		time.sleep(10)	
-			
+					
 		self.fail('Finish the Test')
 		
 if __name__ == '__main__':

@@ -3,6 +3,29 @@ from django.core.urlresolvers import resolve
 from django.http import HttpRequest
 from lists.views import home_page
 from django.template.loader import render_to_string
+from lists.models import Item
+
+class ItemModelTest(TestCase):
+	def test_saving_and_retriveing_item(self):
+		# object 생성 및 속성 부여 후 저장(save())
+		first_item = Item()
+		first_item.text = 'First Item'
+		first_item.save()
+		
+		second_item = Item()
+		second_item.text = 'Second Item'
+		second_item.save()
+		
+		# Object 를 통해 쿼리 수행 가능. 
+		# -all 을 통해 모든 레코드 추출 : 결과 QuerySet 이라는 리스트 형태의 객체 반환 
+		saved_items = Item.objects.all()
+		self.assertEqual(saved_items.count(), 2)
+		
+		first_saved_item = saved_items[0]
+		second_saved_item = saved_items[1]
+		self.assertEqual(first_saved_item.text, first_item.text)
+		self.assertEqual(second_saved_item.text, second_item.text)
+		
 
 # Create your tests here.
 class HomePageTest(TestCase):
@@ -24,12 +47,18 @@ class HomePageTest(TestCase):
 	def test_home_page_can_save_a_POST_request(self):
 		request = HttpRequest()
 		request.method = 'POST'
-		request.POST['item_text'] = 'new work item'
+
+		TestStr = 'new work item A'
+		request.POST['item_text'] = TestStr
 		
 		response = home_page(request)
-		self.assertIn('new work item', response.content.decode()) 
+		self.assertEqual(Item.objects.count(), 1)
+		new_item = Item.objects.first()
+		self.assertEqual(new_item.text, TestStr)	
+				
+		self.assertIn(TestStr, response.content.decode()) 
 		expected_html = render_to_string(
 			'home.html',
-			{'new_item_text': 'new work item'}
+			{'new_item_text': TestStr}
 		)
 		self.assertEqual(response.content.decode(), expected_html)
